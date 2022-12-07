@@ -185,7 +185,7 @@ class DalioModel(AccelerateILQLModel):
 
 
 def main(hparams={}):
-    model_path = "gpt2"
+    model_path = "facebook/opt-1.3b"
     logit_mask = None
     metric_fn = None
     config = TRLConfig.update(default_config, hparams)

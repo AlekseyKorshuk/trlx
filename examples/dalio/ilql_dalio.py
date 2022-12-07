@@ -94,8 +94,6 @@ class DalioModel(AccelerateILQLModel):
         stats = {}
         all_samples = []
         generate_time = time()
-        input_texts = []
-        output_texts = []
         input_lengths = []
 
         self.generate_kwargs = {

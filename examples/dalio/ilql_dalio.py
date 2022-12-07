@@ -98,8 +98,8 @@ class DalioModel(AccelerateILQLModel):
 
         self.generate_kwargs = {
             # "max_new_tokens": 64,
-            "eos_token_id": 50118,
-            "pad_token_id": 50118,
+            "eos_token_id": self.tokenizer.eos_token_id,
+            "pad_token_id": self.tokenizer.pad_token_id,
         }
 
         for prompts in self.eval_dataloader:
@@ -182,7 +182,7 @@ class DalioModel(AccelerateILQLModel):
 
 
 def main(hparams={}):
-    model_path = "facebook/opt-125m"
+    model_path = "gpt2"
     logit_mask = None
     metric_fn = None
     config = TRLConfig.update(default_config, hparams)

@@ -44,7 +44,7 @@ def main(hparams={}):
     eval_prompts = dataset["train"]["input_text"][:64]
 
     trlx.train(
-        "gpt2",
+        "facebook/opt-1.3b",
         dataset=(texts, labels),
         eval_prompts=eval_prompts,
         # metric_fn=metric_fn,

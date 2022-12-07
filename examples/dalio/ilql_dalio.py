@@ -115,10 +115,12 @@ class DalioModel(AccelerateILQLModel):
                 samples, *_ = samples
 
             for prompt, sample in zip(input_ids, samples):
-                sample = self.tokenizer.decode(sample[len(prompt):], skip_special_tokens=True)
-                prompt = self.tokenizer.decode(prompt, skip_special_tokens=True)
-                input_texts.append(prompt)
-                output_texts.append(sample)
+                sample_text = self.tokenizer.decode(sample[len(prompt):], skip_special_tokens=True)
+                prompt_text = self.tokenizer.decode(prompt, skip_special_tokens=True)
+                input_texts.append(prompt_text)
+                output_texts.append(sample_text)
+                print(f"Prompt: {prompt_text}")
+                print(f"Response: {sample_text}")
 
             pad_token = self.tokenizer.eos_token_id if self.tokenizer else 0
             all_samples.append(

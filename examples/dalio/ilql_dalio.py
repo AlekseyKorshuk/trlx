@@ -135,6 +135,7 @@ class DalioModel(AccelerateILQLModel):
 
         if self.accelerator.is_main_process:
             if self.tokenizer:
+                print(next(zip(samples, input_lengths)))
                 input_texts = [self.tokenizer.decode(sample[:int(input_len)]) for sample, input_len in
                                zip(samples, input_lengths)]
                 output_texts = [self.tokenizer.decode(sample[int(input_len):]) for sample, input_len in

@@ -116,7 +116,7 @@ class DalioModel(AccelerateILQLModel):
             for prompt, sample in zip(input_ids, samples):
                 # input_texts.append(prompt)
                 # output_texts.append(sample[len(prompt):])
-                input_lengths.append(torch.tensor(len(prompt)))
+                input_lengths.append(torch.tensor(len(prompt), device=0))
 
             pad_token = self.tokenizer.eos_token_id if self.tokenizer else 0
             all_samples.append(

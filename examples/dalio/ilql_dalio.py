@@ -179,7 +179,7 @@ class DalioModel(AccelerateILQLModel):
 
 
 def main(hparams={}):
-    model_path = "facebook/opt-1.3b"
+    model_path = "facebook/opt-125m"
     logit_mask = None
     metric_fn = None
     config = TRLConfig.update(default_config, hparams)

@@ -120,8 +120,8 @@ class DalioModel(AccelerateILQLModel):
                 sample_text = sample_text if sample_text else "..."
                 input_texts.append(prompt_text)
                 output_texts.append(sample_text)
-                print(f"Prompt: {prompt_text}")
-                print(f"Response: {sample_text}")
+                print(f"[TEST]Prompt: {prompt_text}")
+                print(f"[TEST]Response: {sample_text}")
 
             pad_token = self.tokenizer.eos_token_id if self.tokenizer else 0
             all_samples.append(

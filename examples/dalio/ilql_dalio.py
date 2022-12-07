@@ -1,3 +1,7 @@
+from time import time
+
+import ray
+import wandb
 from datasets import load_dataset
 from transformers import pipeline
 
@@ -9,8 +13,10 @@ from trlx.data.configs import TRLConfig
 import os
 from typing import Callable, Iterable, List, Optional, Tuple
 import torch
+import torch.nn.functional as F
 
 from trlx.data.configs import TRLConfig
+from trlx.model.accelerate_ilql_model import AccelerateILQLModel
 from trlx.pipeline.offline_pipeline import ILQLRolloutStorage
 from trlx.utils import set_seed
 from trlx.utils.loading import get_model, get_orchestrator, get_pipeline
@@ -81,6 +87,97 @@ class DalioOrchestrator(OfflineOrchestrator):
         )
 
 
+class DalioModel(AccelerateILQLModel):
+
+    def evaluate(self):
+        """Samples model on `eval_prompts`, logs stats with `reward_fn` or `metric_fn` if provided"""
+        stats = {}
+        all_samples = []
+        generate_time = time()
+        input_texts = []
+        output_texts = []
+
+        generation_kwargs = {
+            "max_new_tokens": 64,
+            "eos_token_ids": 50118,
+            "pad_token_id": 50118,
+        }
+
+        for prompts in self.eval_dataloader:
+            if isinstance(prompts, torch.Tensor):
+                input_ids = prompts
+                samples = self.generate(prompts, **generation_kwargs)
+            else:
+                input_ids = prompts["input_ids"]
+                samples = self.generate(**prompts, **generation_kwargs)
+
+            if isinstance(samples, tuple):
+                samples, *_ = samples
+
+            for prompt, sample in zip(input_ids, samples):
+                prompt = self.tokenizer.decode(prompt)
+                sample = self.tokenizer.decode(sample[len(prompt):])
+                input_texts.append(prompt)
+                output_texts.append(sample)
+
+            pad_token = self.tokenizer.eos_token_id if self.tokenizer else 0
+            all_samples.append(
+                F.pad(
+                    samples,
+                    (0, self.max_length - samples.shape[1]),
+                    value=pad_token,
+                )
+            )
+        stats["generate_time"] = time() - generate_time
+
+        samples = self.accelerator.gather(torch.vstack(all_samples))
+
+        if self.accelerator.is_main_process:
+            if self.tokenizer:
+                samples = self.tokenizer.batch_decode(samples, skip_special_tokens=True)
+
+            if isinstance(samples[0], str):
+                columns_data = [samples]
+            else:
+                columns_data = [samples.tolist()]
+            columns = ["samples"]
+
+            # in online setting, compute the reward for validation
+            if self.reward_fn:
+                rewards = torch.as_tensor(self.reward_fn(samples), dtype=torch.float)
+                mean_reward = rewards.mean()
+                columns.append("reward")
+                columns_data.append(rewards)
+                stats["mean_reward"] = mean_reward
+                print(f"{mean_reward=}")
+
+            # additionally log any other metrics
+            if self.metric_fn:
+                metric_time = time()
+                metrics = self.metric_fn(samples)
+                stats["metric_time"] = time() - metric_time
+
+                mean_metrics = {
+                    f"metrics/{k}": torch.as_tensor(xs).mean(-1)
+                    for k, xs in metrics.items()
+                }
+
+                stats.update(mean_metrics)
+
+                for metric, values in metrics.items():
+                    columns.append(metric)
+                    columns_data.append(values)
+
+            rows = list(zip(*columns_data))
+            print(rows[0])
+            if not ray.is_initialized():
+                stats["samples"] = wandb.Table(columns=columns, rows=rows)
+                stats["table"] = wandb.Table(columns=["input_text", "generated_response"],
+                                             rows=[input_texts, output_texts])
+
+        return stats
+
+
 def main(hparams={}):
     model_path = "facebook/opt-1.3b"
     logit_mask = None
@@ -110,7 +207,7 @@ def main(hparams={}):
     if model_path:
         config.model.model_path = model_path
 
-    model = get_model(config.model.model_type)(
+    model = DalioModel(
         config=config,
         logit_mask=logit_mask,
         metric_fn=metric_fn,

@@ -47,7 +47,7 @@ def main(hparams={}):
         "gpt2",
         dataset=(texts, labels),
         eval_prompts=eval_prompts,
-        metric_fn=metric_fn,
+        # metric_fn=metric_fn,
         config=config,
         split_token=split_token,
     )

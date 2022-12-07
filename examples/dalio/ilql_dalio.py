@@ -3,23 +3,15 @@ from time import time
 import ray
 import wandb
 from datasets import load_dataset
-from transformers import pipeline
-
-import trlx
 import yaml
-from typing import List, Dict
 import os
-from trlx.data.configs import TRLConfig
-import os
-from typing import Callable, Iterable, List, Optional, Tuple
 import torch
 import torch.nn.functional as F
-
 from trlx.data.configs import TRLConfig
 from trlx.model.accelerate_ilql_model import AccelerateILQLModel
 from trlx.pipeline.offline_pipeline import ILQLRolloutStorage
 from trlx.utils import set_seed
-from trlx.utils.loading import get_model, get_orchestrator, get_pipeline
+from trlx.utils.loading import get_pipeline
 from trlx.orchestrator.offline_orchestrator import OfflineOrchestrator
 
 default_config = yaml.safe_load(open("configs/ilql_config.yml"))

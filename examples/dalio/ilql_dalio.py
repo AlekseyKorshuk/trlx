@@ -98,7 +98,7 @@ class DalioModel(AccelerateILQLModel):
         output_texts = []
 
         self.generate_kwargs = {
-            "max_new_tokens": 64,
+            # "max_new_tokens": 64,
             "eos_token_ids": 50118,
             "pad_token_id": 50118,
         }

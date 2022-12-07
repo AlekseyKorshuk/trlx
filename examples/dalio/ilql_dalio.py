@@ -185,7 +185,7 @@ class DalioModel(AccelerateILQLModel):
 
 
 def main(hparams={}):
-    model_path = "gpt2-xl"
+    model_path = "gpt2-large"
     logit_mask = None
     metric_fn = None
     config = TRLConfig.update(default_config, hparams)

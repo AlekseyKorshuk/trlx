@@ -6,7 +6,7 @@ model:
 
 train:
   seq_length: 1024
-  batch_size: 1
+  batch_size: 16
   epochs: 100
   total_steps: 1000
 

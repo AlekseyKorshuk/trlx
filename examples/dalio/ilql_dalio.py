@@ -117,6 +117,7 @@ class DalioModel(AccelerateILQLModel):
             for prompt, sample in zip(input_ids, samples):
                 sample_text = self.tokenizer.decode(sample[len(prompt):], skip_special_tokens=True)
                 prompt_text = self.tokenizer.decode(prompt, skip_special_tokens=True)
+                sample_text = sample_text if sample_text else "..."
                 input_texts.append(prompt_text)
                 output_texts.append(sample_text)
                 print(f"Prompt: {prompt_text}")

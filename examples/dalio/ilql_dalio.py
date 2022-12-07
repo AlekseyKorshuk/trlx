@@ -96,12 +96,12 @@ class DalioModel(AccelerateILQLModel):
         generate_time = time()
         input_lengths = []
 
-        self.generate_kwargs = {
-            # "max_new_tokens": 64,
-            "eos_token_id": 198,
-            # "eos_token_id": self.tokenizer.eos_token_id,
-            # "pad_token_id": self.tokenizer.pad_token_id,
-        }
+        self.generate_kwargs["eos_token_id"] = 198
+        # "max_new_tokens": 64,
+        # "eos_token_id": 198,
+        # "eos_token_id": self.tokenizer.eos_token_id,
+        # "pad_token_id": self.tokenizer.pad_token_id,
+        # }
 
         for prompts in self.eval_dataloader:
             if isinstance(prompts, torch.Tensor):
@@ -185,7 +185,7 @@ class DalioModel(AccelerateILQLModel):
 
 
 def main(hparams={}):
-    model_path = "EleutherAI/gpt-neo-125M"
+    model_path = "gpt2"
     logit_mask = None
     metric_fn = None
     config = TRLConfig.update(default_config, hparams)

@@ -115,13 +115,8 @@ class DalioModel(AccelerateILQLModel):
                 samples, *_ = samples
 
             for prompt, sample in zip(input_ids, samples):
-                sample_text = self.tokenizer.decode(sample[len(prompt):], skip_special_tokens=True)
-                prompt_text = self.tokenizer.decode(prompt, skip_special_tokens=True)
-                sample_text = sample_text if sample_text else "..."
-                input_texts.append(prompt_text)
-                output_texts.append(sample_text)
-                print(f"[TEST]Prompt: {prompt_text}")
-                print(f"[TEST]Response: {sample_text}")
+                input_texts.append(prompt)
+                output_texts.append(sample[len(prompt):])
 
             pad_token = self.tokenizer.eos_token_id if self.tokenizer else 0
             all_samples.append(
@@ -134,12 +129,14 @@ class DalioModel(AccelerateILQLModel):
         stats["generate_time"] = time() - generate_time
 
         samples = self.accelerator.gather(torch.vstack(all_samples))
-        input_texts = self.accelerator.gather(input_texts)
-        output_texts = self.accelerator.gather(output_texts)
+        input_texts = self.accelerator.gather(torch.vstack(input_texts))
+        output_texts = self.accelerator.gather(torch.vstack(output_texts))
 
         if self.accelerator.is_main_process:
             if self.tokenizer:
                 samples = self.tokenizer.batch_decode(samples, skip_special_tokens=True)
+                input_texts = self.tokenizer.batch_decode(input_texts, skip_special_tokens=True)
+                output_texts = self.tokenizer.batch_decode(output_texts, skip_special_tokens=True)
 
             if isinstance(samples[0], str):
                 columns_data = [samples]

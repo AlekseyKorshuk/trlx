@@ -115,8 +115,8 @@ class DalioModel(AccelerateILQLModel):
                 samples, *_ = samples
 
             for prompt, sample in zip(input_ids, samples):
-                prompt = self.tokenizer.decode(prompt)
-                sample = self.tokenizer.decode(sample[len(prompt):])
+                sample = self.tokenizer.decode(sample[len(prompt):], skip_special_tokens=True)
+                prompt = self.tokenizer.decode(prompt, skip_special_tokens=True)
                 input_texts.append(prompt)
                 output_texts.append(sample)
 
@@ -131,6 +131,8 @@ class DalioModel(AccelerateILQLModel):
         stats["generate_time"] = time() - generate_time
 
         samples = self.accelerator.gather(torch.vstack(all_samples))
+        input_texts = self.accelerator.gather(input_texts)
+        output_texts = self.accelerator.gather(output_texts)
 
         if self.accelerator.is_main_process:
             if self.tokenizer:

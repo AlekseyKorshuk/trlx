@@ -6,13 +6,13 @@ model:
 
 train:
   seq_length: 1024
-  batch_size: 1
+  batch_size: 16
   epochs: 100
   total_steps: 1000
 
   lr_init: 5.0e-5
   lr_target: 5.0e-5
-  opt_betas: [0.9, 0.95]
+  opt_betas: [ 0.9, 0.95 ]
   opt_eps: 1.0e-8
   weight_decay: 1.0e-6
 
@@ -31,5 +31,5 @@ method:
   awac_scale: 1
   alpha: 0.001
   steps_for_target_q_sync: 5
-  betas: [4]
+  betas: [ 4 ]
   two_qs: true

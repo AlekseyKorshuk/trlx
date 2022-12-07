@@ -130,12 +130,9 @@ class DalioModel(AccelerateILQLModel):
 
         samples = self.accelerator.gather(torch.vstack(all_samples))
         input_lengths = self.accelerator.gather(torch.vstack(input_lengths))
-        # input_texts = self.accelerator.gather(input_texts)
-        # output_texts = self.accelerator.gather(output_texts)
 
         if self.accelerator.is_main_process:
             if self.tokenizer:
-                print(next(zip(samples, input_lengths)))
                 input_texts = [self.tokenizer.decode(sample[:int(input_len)]) for sample, input_len in
                                zip(samples, input_lengths)]
                 output_texts = [self.tokenizer.decode(sample[int(input_len):]) for sample, input_len in
@@ -176,7 +173,6 @@ class DalioModel(AccelerateILQLModel):
 
             rows = list(zip(*columns_data))
             print(rows[0])
-            print(list(zip(*[input_texts, output_texts])))
             if not ray.is_initialized():
                 stats["samples"] = wandb.Table(columns=columns, rows=rows)
                 stats["table"] = wandb.Table(columns=["input_text", "generated_response"],

@@ -36,6 +36,7 @@ class OfflineOrchestrator(Orchestrator):
             else:
                 prompt_tok_len = 1
 
+            import pdb; pdb.set_trace()
             # indices of continuations, to mask prompts in loss computation
             a_ixs = torch.arange(prompt_tok_len - 1, len(s_tok) - 1)
             # same continuations but for value computation, with the premise to eventually support interleaved dialog

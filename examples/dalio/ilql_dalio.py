@@ -219,6 +219,8 @@ def main(hparams={}):
     )
 
     model.tokenizer.eos_token_id = 50118
+    model.tokenizer.pad_token_id = 50118
+    model.tokenizer.bos_token_id = 50118
 
     batch_size = config.train.batch_size * int(os.environ.get("WORLD_SIZE", 1))
     if eval_prompts is None:

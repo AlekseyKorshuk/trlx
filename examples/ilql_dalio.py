@@ -41,7 +41,7 @@ def main(hparams={}):
     ]
     labels = train_dataset["score"]
 
-    eval_prompts = dataset["train"]["input_text"][:64]
+    eval_prompts = dataset["train"]["input_text"][:8]
 
     trlx.train(
         "facebook/opt-1.3b",

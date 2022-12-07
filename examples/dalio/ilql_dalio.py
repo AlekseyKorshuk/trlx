@@ -129,7 +129,7 @@ class DalioModel(AccelerateILQLModel):
         stats["generate_time"] = time() - generate_time
 
         samples = self.accelerator.gather(torch.vstack(all_samples))
-        input_lengths = self.accelerator.gather(torch.tensor(input_lengths, device=self.device))
+        input_lengths = self.accelerator.gather(torch.tensor(input_lengths, device=0))
         # input_texts = self.accelerator.gather(input_texts)
         # output_texts = self.accelerator.gather(output_texts)
 

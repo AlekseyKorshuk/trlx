@@ -89,7 +89,7 @@ def main(hparams={}):
 
     dataset = load_dataset("ChaiML/dalio_scored_responses_v1")
     train_dataset = dataset["train"]
-    split_token = "[SEP]"
+    split_token = "<|endoftext|>"
     samples = [
         input_text + split_token + output_text for input_text, output_text in
         zip(train_dataset["input_text"], train_dataset["output_text"])

@@ -98,8 +98,9 @@ class DalioModel(AccelerateILQLModel):
 
         self.generate_kwargs = {
             # "max_new_tokens": 64,
-            "eos_token_id": self.tokenizer.eos_token_id,
-            "pad_token_id": self.tokenizer.pad_token_id,
+            "eos_token_id": 198,
+            # "eos_token_id": self.tokenizer.eos_token_id,
+            # "pad_token_id": self.tokenizer.pad_token_id,
         }
 
         for prompts in self.eval_dataloader:
@@ -216,14 +217,16 @@ def main(hparams={}):
         metric_fn=metric_fn,
     )
 
-    if "opt" in model_path:
-        model.tokenizer.eos_token_id = 50118
-        model.tokenizer.pad_token_id = 50118
-        model.tokenizer.bos_token_id = 50118
-    elif "gpt2" in model_path:
-        model.tokenizer.eos_token_id = 198
-        model.tokenizer.pad_token_id = 198
-        model.tokenizer.bos_token_id = 198
+    # if "opt" in model_path:
+    #     model.tokenizer.eos_token_id = 50118
+    #     model.evaluation_kwargs = {
+    #         "eos_token_id": 50118,
+    #     }
+    # elif "gpt2" in model_path:
+    #     model.tokenizer.eos_token_id = 198
+    #     model.evaluation_kwargs = {
+    #         "eos_token_id": 198,
+    #     }
 
     batch_size = config.train.batch_size * int(os.environ.get("WORLD_SIZE", 1))
     if eval_prompts is None:

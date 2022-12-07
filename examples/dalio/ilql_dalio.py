@@ -97,7 +97,7 @@ class DalioModel(AccelerateILQLModel):
         input_texts = []
         output_texts = []
 
-        generation_kwargs = {
+        self.generate_kwargs = {
             "max_new_tokens": 64,
             "eos_token_ids": 50118,
             "pad_token_id": 50118,
@@ -106,10 +106,10 @@ class DalioModel(AccelerateILQLModel):
         for prompts in self.eval_dataloader:
             if isinstance(prompts, torch.Tensor):
                 input_ids = prompts
-                samples = self.generate(prompts, **generation_kwargs)
+                samples = self.generate(prompts)
             else:
                 input_ids = prompts["input_ids"]
-                samples = self.generate(**prompts, **generation_kwargs)
+                samples = self.generate(**prompts)
 
             if isinstance(samples, tuple):
                 samples, *_ = samples

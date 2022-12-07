@@ -1,9 +1,3 @@
-samples, rewards = dataset
-
-if len(samples) != len(rewards):
-    raise ValueError(
-        f"Number of samples {len(samples)} should match the number of rewards {len(rewards)}"
-    )
 import os
 from typing import Callable, Iterable, List, Optional, Tuple
 

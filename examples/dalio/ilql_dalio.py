@@ -89,11 +89,6 @@ class DalioModel(AccelerateILQLModel):
         input_lengths = []
 
         self.generate_kwargs["eos_token_id"] = 198
-        # "max_new_tokens": 64,
-        # "eos_token_id": 198,
-        # "eos_token_id": self.tokenizer.eos_token_id,
-        # "pad_token_id": self.tokenizer.pad_token_id,
-        # }
 
         for prompts in self.eval_dataloader:
             if isinstance(prompts, torch.Tensor):
@@ -107,8 +102,6 @@ class DalioModel(AccelerateILQLModel):
                 samples, *_ = samples
 
             for prompt, sample in zip(input_ids, samples):
-                # input_texts.append(prompt)
-                # output_texts.append(sample[len(prompt):])
                 input_lengths.append(torch.tensor(prompt.shape[0], device=sample.device))
 
             pad_token = self.tokenizer.eos_token_id if self.tokenizer else 0
@@ -210,17 +203,6 @@ def main(hparams={}):
         logit_mask=logit_mask,
         metric_fn=metric_fn,
     )
-
-    # if "opt" in model_path:
-    #     model.tokenizer.eos_token_id = 50118
-    #     model.evaluation_kwargs = {
-    #         "eos_token_id": 50118,
-    #     }
-    # elif "gpt2" in model_path:
-    #     model.tokenizer.eos_token_id = 198
-    #     model.evaluation_kwargs = {
-    #         "eos_token_id": 198,
-    #     }
 
     batch_size = config.train.batch_size * int(os.environ.get("WORLD_SIZE", 1))
     if eval_prompts is None:

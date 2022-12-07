@@ -174,6 +174,7 @@ class DalioModel(AccelerateILQLModel):
 
             rows = list(zip(*columns_data))
             print(rows[0])
+            print(list(zip(*[input_texts, output_texts])))
             if not ray.is_initialized():
                 stats["samples"] = wandb.Table(columns=columns, rows=rows)
                 stats["table"] = wandb.Table(columns=["input_text", "generated_response"],

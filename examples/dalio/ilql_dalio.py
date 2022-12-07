@@ -51,6 +51,8 @@ def main(hparams={}):
         metric_fn=metric_fn,
     )
 
+    model.tokenizer.eos_token_id = 50118
+
     batch_size = config.train.batch_size * int(os.environ.get("WORLD_SIZE", 1))
     if eval_prompts is None:
         eval_prompts = [model.tokenizer.bos_token] * batch_size

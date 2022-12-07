@@ -39,9 +39,9 @@ def main(hparams={}):
         input_text + split_token + output_text for input_text, output_text in
         zip(train_dataset["input_text"], train_dataset["output_text"])
     ]
-    labels = train_dataset["score"]
+    labels = list(train_dataset["score"])
 
-    eval_prompts = dataset["validation"]["input_text"][:64]
+    eval_prompts = dataset["train"]["input_text"][:64]
 
     trlx.train(
         "gpt2",

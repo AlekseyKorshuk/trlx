@@ -129,8 +129,8 @@ class DalioModel(AccelerateILQLModel):
         stats["generate_time"] = time() - generate_time
 
         samples = self.accelerator.gather(torch.vstack(all_samples))
-        input_texts = self.accelerator.gather(torch.vstack(input_texts))
-        output_texts = self.accelerator.gather(torch.vstack(output_texts))
+        input_texts = self.accelerator.gather(input_texts)
+        output_texts = self.accelerator.gather(output_texts)
 
         if self.accelerator.is_main_process:
             if self.tokenizer:

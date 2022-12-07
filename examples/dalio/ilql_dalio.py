@@ -50,9 +50,9 @@ class DalioOrchestrator(OfflineOrchestrator):
                 prompt_tok_len = 1
 
             # indices of continuations, to mask prompts in loss computation
-            a_ixs = torch.arange(prompt_tok_len + 1, len(s_tok) - 1)
+            a_ixs = torch.arange(prompt_tok_len + 0, len(s_tok) - 1)
             # same continuations but for value computation, with the premise to eventually support interleaved dialog
-            s_ixs = torch.arange(prompt_tok_len + 1, len(s_tok))
+            s_ixs = torch.arange(prompt_tok_len + 0, len(s_tok))
             # mask continuation's ending
             terminals = torch.ones_like(s_ixs)
             terminals[-1] = 0
@@ -216,9 +216,14 @@ def main(hparams={}):
         metric_fn=metric_fn,
     )
 
-    model.tokenizer.eos_token_id = 50118
-    model.tokenizer.pad_token_id = 50118
-    model.tokenizer.bos_token_id = 50118
+    if "opt" in model_path:
+        model.tokenizer.eos_token_id = 50118
+        model.tokenizer.pad_token_id = 50118
+        model.tokenizer.bos_token_id = 50118
+    elif "gpt2" in model_path:
+        model.tokenizer.eos_token_id = 198
+        model.tokenizer.pad_token_id = 198
+        model.tokenizer.bos_token_id = 198
 
     batch_size = config.train.batch_size * int(os.environ.get("WORLD_SIZE", 1))
     if eval_prompts is None:

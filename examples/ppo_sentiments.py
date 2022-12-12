@@ -30,7 +30,7 @@ def main(hparams={}):
 
     sentiment_fn = pipeline(
         "sentiment-analysis",
-        "lvwerra/distilbert-imdb",
+        "ChaiML/reward_48m_gpt2_target_2",
         top_k=2,
         truncation=True,
         batch_size=256,

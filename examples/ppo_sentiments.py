@@ -17,7 +17,7 @@ def get_positive_score(scores):
     return dict(map(lambda x: tuple(x.values()), scores))["POSITIVE"]
 
 
-default_config = yaml.safe_load(open("configs/ppo_config.yml"))
+default_config = yaml.safe_load(open("configs/ppo_gptj.yml"))
 
 
 def main(hparams={}):

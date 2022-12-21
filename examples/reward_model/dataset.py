@@ -11,6 +11,8 @@ class PairwiseDataset(Dataset):
         self.rejected_attn_masks = []
 
         for pair in tqdm.tqdm(pairs, desc="Encoding dataset", total=len(pairs)):
+            if len(self.chosen_input_ids) == 5000:
+                break
             prompt = pair["prompt"] if "prompt" in pair.keys() else ""
             chosen, rejected = pair["chosen"], pair["rejected"]
             tok_chosen = tokenizer(prompt + chosen + "<|endoftext|>", return_tensors="pt")

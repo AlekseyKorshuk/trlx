@@ -65,7 +65,7 @@ def prepare_data(data_args, tokenizer, max_seq_length):
     if "validation" in dataset.keys():
         val_dataset = PairwiseDataset(dataset["validation"], tokenizer, max_length=max_seq_length)
     else:
-        train_size = int((1 - data_args.validation_split_percentage) * len(train_dataset))
+        train_size = int((1 - data_args.validation_split_percentage / 100) * len(train_dataset))
         train_dataset, val_dataset = random_split(train_dataset, [train_size, len(train_dataset) - train_size])
     return train_dataset, val_dataset
 

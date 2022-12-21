@@ -14,4 +14,4 @@ deepspeed train.py \
   --logging_steps 100 \
   --save_steps 100 \
   --seed 42 \
-  --fp16 1
+  --bf16 1

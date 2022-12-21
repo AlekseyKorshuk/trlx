@@ -1,5 +1,6 @@
 from torch.utils.data import Dataset
 import torch
+import tqdm
 
 
 class PairwiseDataset(Dataset):
@@ -9,7 +10,7 @@ class PairwiseDataset(Dataset):
         self.rejected_input_ids = []
         self.rejected_attn_masks = []
 
-        for pair in pairs:
+        for pair in tqdm.tqdm(pairs, desc="Encoding dataset", total=len(pairs)):
             prompt = pair["prompt"] if "prompt" in pair.keys() else ""
             chosen, rejected = pair["chosen"], pair["rejected"]
             tok_chosen = tokenizer(prompt + chosen + "<|endoftext|>", return_tensors="pt")

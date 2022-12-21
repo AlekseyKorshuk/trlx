@@ -2,9 +2,10 @@ from transformers import AutoModelForCausalLM, PreTrainedModel
 from torch import nn
 
 
-class GPTRewardModel(PreTrainedModel):
+class GPTRewardModel(nn.Module):
     def __init__(self, config):
-        super().__init__(config)
+        super().__init__()
+        # super().__init__(config)
         model = AutoModelForCausalLM.from_pretrained(config)
         self.config = model.config
         # gpt-neo models have hidden_size instead of n_embd

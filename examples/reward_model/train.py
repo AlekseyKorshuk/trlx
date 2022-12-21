@@ -106,7 +106,7 @@ def main():
     model = load_model(
         model_name_or_path=model_args.model_name_or_path,
     )
-    train_dataset, val_dataset = prepare_data(data_args, tokenizer, model.config.max_position_embeddings)
+    train_dataset, val_dataset = prepare_data(data_args, tokenizer, data_args.max_seq_length)
 
     trainer = PairwiseTrainer(
         model=model,

@@ -1,10 +1,10 @@
 deepspeed train.py \
-  --deepspeed \
+  --deepspeed 1 \
   --deepspeed_config ds_config.json \
   --model_name_or_path EleutherAI/gpt-neo-125M \
   --dataset_name hh-rlhf \
-  --do_train \
-  --do_eval \
+  --do_train 1 \
+  --do_eval 1 \
   --max_seq_length 1024 \
   --per_device_train_batch_size 1 \
   --learning_rate 5e-5 \
@@ -14,4 +14,4 @@ deepspeed train.py \
   --logging_steps 100 \
   --save_steps 100 \
   --seed 42 \
-  --fp16
+  --fp16 1

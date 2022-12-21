@@ -34,12 +34,6 @@ class ModelArguments:
         default=None, metadata={"help": "Pretrained tokenizer name or path if not the same as model_name"}
     )
 
-    def __post_init__(self):
-        if self.config_overrides is not None and (self.config_name is not None or self.model_name_or_path is not None):
-            raise ValueError(
-                "--config_overrides can't be used in combination with --config_name or --model_name_or_path"
-            )
-
 
 @dataclass
 class DataTrainingArguments:
@@ -56,17 +50,6 @@ class DataTrainingArguments:
             "help": "The percentage of the train set used as validation set in case there's no validation split"
         },
     )
-
-    def __post_init__(self):
-        if self.dataset_name is None and self.train_file is None and self.validation_file is None:
-            raise ValueError("Need either a dataset name or a training/validation file.")
-        else:
-            if self.train_file is not None:
-                extension = self.train_file.split(".")[-1]
-                assert extension in ["csv", "json", "txt"], "`train_file` should be a csv, a json or a txt file."
-            if self.validation_file is not None:
-                extension = self.validation_file.split(".")[-1]
-                assert extension in ["csv", "json", "txt"], "`validation_file` should be a csv, a json or a txt file."
 
 
 def prepare_data(data_args, tokenizer, max_seq_length):

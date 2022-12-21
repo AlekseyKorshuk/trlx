@@ -15,6 +15,8 @@ class PairwiseDataset(Dataset):
             tok_chosen = tokenizer(prompt + chosen + "<|endoftext|>", return_tensors="pt")
             tok_rejected = tokenizer(rejected + "<|endoftext|>", return_tensors="pt")
             # Reject data with num tokens > max_length
+            print("tok_chosen:", tok_chosen)
+            print("tok_rejected:", tok_rejected)
             if tok_chosen.shape[-1] <= max_length and tok_rejected.shape[-1] <= max_length:
                 chosen_encodings_dict = tokenizer(chosen + '<|endoftext|>', truncation=True,
                                                   max_length=max_length, padding="max_length", return_tensors="pt")

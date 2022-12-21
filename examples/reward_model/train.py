@@ -62,7 +62,7 @@ class DataTrainingArguments:
 def prepare_data(data_args, tokenizer, max_seq_length):
     dataset = load_dataset(data_args.dataset_name)
     train_dataset = PairwiseDataset(dataset["train"], tokenizer, max_length=max_seq_length)
-    if "validation" in dataset:
+    if "validation" in dataset.keys():
         val_dataset = PairwiseDataset(dataset["validation"], tokenizer, max_length=max_seq_length)
     else:
         train_size = int((1 - data_args.validation_split_percentage) * len(train_dataset))

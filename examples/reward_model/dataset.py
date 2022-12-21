@@ -10,7 +10,7 @@ class PairwiseDataset(Dataset):
         self.rejected_attn_masks = []
 
         for pair in pairs:
-            prompt = pair["prompt"] if "prompt" in pair else ""
+            prompt = pair["prompt"] if "prompt" in pair.keys() else ""
             chosen, rejected = pair["chosen"], pair["rejected"]
             tok_chosen = tokenizer(prompt + chosen + "<|endoftext|>", return_tensors="pt")
             tok_rejected = tokenizer(rejected + "<|endoftext|>", return_tensors="pt")

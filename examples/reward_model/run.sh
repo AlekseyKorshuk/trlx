@@ -1,7 +1,7 @@
 deepspeed train.py \
   --deepspeed ds_config.json \
   --model_name_or_path EleutherAI/gpt-neo-125M \
-  --dataset_name hh-rlhf \
+  --dataset_name Anthropic/hh-rlhf \
   --do_train 1 \
   --do_eval 1 \
   --report_to all \

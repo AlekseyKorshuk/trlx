@@ -2,13 +2,13 @@ deepspeed train.py \
   --deepspeed \
   --deepspeed_config ds_config.json \
   --model_name_or_path EleutherAI/gpt-neo-125M \
-  --dataset_name wikitext \
+  --dataset_name hh-rlhf \
   --do_train \
   --do_eval \
   --max_seq_length 1024 \
-  --per_device_train_batch_size 32 \
+  --per_device_train_batch_size 1 \
   --learning_rate 5e-5 \
-  --num_train_epochs 3 \
+  --num_train_epochs 1 \
   --output_dir output \
   --overwrite_output_dir \
   --logging_steps 100 \

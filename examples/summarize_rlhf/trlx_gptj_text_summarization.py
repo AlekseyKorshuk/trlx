@@ -20,7 +20,6 @@ if not os.path.exists(REWARD_CHECKPOINT_PATH):
     )
 SFT_MODEL_PATH = "CarperAI/openai_summarize_tldr_sft"
 
-
 if __name__ == "__main__":
 
     # Load the pre-trained reward model
@@ -33,11 +32,12 @@ if __name__ == "__main__":
     rw_device = torch.device("cuda:{}".format(1))  # set reward model device
     rw_model.to(rw_device)
 
+
     def get_scores(samples: List[str]):
         scores_list = []
         batch_size = 2
         for i in range(0, len(samples), batch_size):
-            sub_samples = samples[i : i + batch_size]
+            sub_samples = samples[i: i + batch_size]
             sub_samples = [
                 "<|startoftext|>" + chosen + "<|endoftext|>" for chosen in sub_samples
             ]
@@ -58,6 +58,7 @@ if __name__ == "__main__":
         scores = torch.cat(scores_list, dim=0)
         return scores
 
+
     def get_prompt_dataset(prompts, max_length):
         """
         Get the prompt after T5 decoding to make sure dictionary
@@ -70,7 +71,7 @@ if __name__ == "__main__":
                     prompts[i].split("TL;DR:")[0],
                     truncation=True,
                     max_length=max_length
-                    - 5,  # to make sure "TL;DR" dont get truncated
+                               - 5,  # to make sure "TL;DR" dont get truncated
                 )["input_ids"],
                 skip_special_tokens=True,
             ).strip()
@@ -82,6 +83,7 @@ if __name__ == "__main__":
             formatted_prompts.append(tmp)
         return formatted_prompts
 
+
     def reward_fn(samples: List[str], **kwargs):
         original_samples = [text.split("TL;DR:")[0] + "TL;DR: " for text in samples]
         original_samples = [
@@ -92,6 +94,7 @@ if __name__ == "__main__":
         norms_scores = scores - original_scores
         return norms_scores
 
+
     config_path = pathlib.Path(__file__).parent.joinpath(
         "configs/ppo_config_summ_gptj.yml"
     )
@@ -101,7 +104,7 @@ if __name__ == "__main__":
     tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "left"
     max_length_input = (
-        config.train.seq_length - config.method.gen_kwargs["max_new_tokens"]
+            config.train.seq_length - config.method.gen_kwargs["max_new_tokens"]
     )
 
     dataset = load_dataset("CarperAI/openai_summarize_tldr")
@@ -113,6 +116,11 @@ if __name__ == "__main__":
     # Split contents into summaries and labels
     train_posts, train_summaries = zip(*train_set)
     val_posts, val_summaries = zip(*val_set)
+
+    train_posts = train_posts[:100]
+    train_summaries = train_summaries[:100]
+    val_posts = val_posts[:100]
+    val_summaries = val_summaries[:100]
 
     # Get the OpenAI summaries
     post_summary_dict = {}
@@ -128,7 +136,7 @@ if __name__ == "__main__":
         reward_fn=reward_fn,
         prompts=train_prompts,
         eval_prompts=val_prompts[
-            0:1000
-        ],  # sampling 1000 validation prompts for evaluation speed in training
+                     0:1000
+                     ],  # sampling 1000 validation prompts for evaluation speed in training
         config=config,
     )

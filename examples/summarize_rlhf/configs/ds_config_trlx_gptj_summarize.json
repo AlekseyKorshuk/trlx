@@ -8,7 +8,7 @@
     "opt_level": "O2"
   },
   "zero_optimization": {
-    "stage": 2,
+    "stage": 3,
     "offload_param": {
       "device": "cpu"
     },

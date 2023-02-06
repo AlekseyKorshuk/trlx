@@ -18,5 +18,6 @@
     "allgather_partitions": true,
     "allgather_bucket_size": 5e8,
     "contiguous_gradients": true
-  }
+  },
+  "gradient_clipping": "auto"
 }
